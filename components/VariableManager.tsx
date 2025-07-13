@@ -119,10 +119,11 @@ export default function VariableManager() {
     try {
       const parsedValue = parseValue(editingVarValue)
 
-      const res = await fetch(`/api/variables/${name}`, {
+      // NEW: Pass name in the body, targetting /api/variables with PUT method
+      const res = await fetch("/api/variables", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ value: parsedValue }),
+        body: JSON.stringify({ name: name, value: parsedValue }), // Name now in body
       })
       const data = await res.json()
       if (!res.ok) {
@@ -151,7 +152,7 @@ export default function VariableManager() {
   }
 
   const getValueType = (value: any) => {
-    if (typeof value === "object") return "object"
+    if (typeof value === "object" && value !== null) return "object"
     if (typeof value === "number") return "number"
     if (typeof value === "boolean") return "boolean"
     return "string"
